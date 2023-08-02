@@ -8,10 +8,18 @@ auth.get("/",(req,res)=>{
         res.send({statusCode:200,data})
     }) 
 })
+auth.get("/:username",(req,res)=>{
+    let username = req.params.username
+    authModel.findOne({username}).then(data=>{
+        console.log(data)
+        res.send({statusCode:200,data})
+    }) 
+})
 
 //set authentication
 auth.post("/",(req,res)=>{
     authModel.create(req.body).then(user=>console.log("sucessss"))
 })
+
 
 module.exports=auth

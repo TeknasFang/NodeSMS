@@ -1,54 +1,67 @@
 const mongoose = require("mongoose")
 
 let StudentSchema = new mongoose.Schema({
-    
-    email:{
-        type:String,
-        required:[true,'Oops you forget to write your email']
+
+    email: {
+        type: String,
+        required: [true, 'Oops you forget to write your email']
     },
-    phone:{
-        type:String,
-        required:[true,'Oops you forget to write your mobile number']
+    phone: {
+        type: String,
+        required: [true, 'Oops you forget to write your mobile number']
     },
-    dob:{
-        type:String,
-        required:[true,'Oops you forget to write your roll number']
+    dob: {
+        type: String,
+        required: [true, 'Oops you forget to write your roll number']
     },
-    standard:{
-        type:String,
-        required:[true,'Oops you forget to write your standard']
+    standard: {
+        type: String,
+        required: [true, 'Oops you forget to write your standard']
     },
-    firstName:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
+    firstName: {
+        type: String,
+        required: [true, 'Oops you forget to write your firstName']
     },
-    lastName:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
-    },adress:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
-    },stream:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
-    },parentFirstName:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
+    lastName: {
+        type: String,
+        required: [true, 'Oops you forget to write your lastName']
+    }, address: {
+        type: String,
+        required: [true, 'Oops you forget to write your adress']
+    }, stream: {
+        type: String,
+        required: [true, 'Oops you forget to write your stream']
+    }, parentFirstName: {
+        type: String,
+        required: [true, 'Oops you forget to write your parentFirstName']
     },
-    parentLastName:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
-    },parentEmail:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
+    parentLastName: {
+        type: String,
+        required: [true, 'Oops you forget to write your name']
+    }, parentEmail: {
+        type: String,
+        required: [true, 'Oops you forget to write your name']
     },
-    parentPhone:{
-        type:String,
-        required:[true,'Oops you forget to write your name']
+    parentPhone: {
+        type: String,
+        required: [true, 'Oops you forget to write your name']
     },
+    imageFileName: {
+        type: String
+    },
+    username: {
+        type: String
+    },
+    password: {
+        type: String
+    },studentImg:
+    {
+        data: Buffer,
+        contentType: String
+    }
 })
 
-let StudentModel = mongoose.model("students",StudentSchema)
+let StudentModel = mongoose.model("students", StudentSchema)
 
 module.exports = StudentModel
 

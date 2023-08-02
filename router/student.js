@@ -5,19 +5,21 @@ const nodemailer = require('nodemailer')
 const PWD = require("../server")
 const multer = require('multer')
 const app = require("../server")
-
+var path = require('path')
+var fs = require('fs')
+let DIR = require('../server')
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'images/')
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname)
-  },
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname)
+    },
 })
 
 const upload = multer({ storage: storage })
 
-const myMail='sanket.mistry.rayoinnovations@gmail.com'
+const myMail = 'sanket.mistry.rayoinnovations@gmail.com'
 const myPassword = PWD
 const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
@@ -30,8 +32,8 @@ const transporter = nodemailer.createTransport({
 
 function generatePassword() {
     var length = 12,
-        charset = 
-"@#$&*0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$&*0123456789abcdefghijklmnopqrstuvwxyz",
+        charset =
+            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$&*0123456789abcdefghijklmnopqrstuvwxyz",
         password = "";
     for (var i = 0, n = charset.length; i < length; ++i) {
         password += charset.charAt(Math.floor(Math.random() * n));
@@ -42,7 +44,7 @@ function generatePassword() {
 student.post("/", (req, res) => {
     console.log(req.body)
     studentModel.create(req.body).then(user => {
-        console.log("sucessss")
+        console.log("New Student Added !!!")
         res.send(user)
     }).catch(err => res.send(err))
 })
@@ -55,33 +57,62 @@ student.get("/", (req, res) => {
     })
 })
 
+student.get("/:username",(req,res)=>{
+    let username = req.params.username
+    console.log(username)
+    studentModel.findOne({username}).then(data=>{
+        console.log(data)
+        res.send({statusCode:200,data})
+    }) 
+})
+
 // update student
 student.put("/:id", (req, res) => {
-    let studentId = req.params.id
+    let username = req.params.id
 
-    studentModel.updateOne({ _id: studentId }, req.body)
-        .then(data => res.send(studentId))
+    studentModel.updateOne({ _id: username }, req.body)
+        .then(data => res.send(username))
 })
 
 // delete student
 student.delete("/:id", (req, res) => {
-    let studentId = req.params.id
+    let username = req.params.id
 
-    studentModel.deleteOne({ _id: studentId })
-        .then(data => res.send(studentId))
+    studentModel.deleteOne({ _id: username })
+        .then(data => res.send(username))
         .catch(err => res.send(err))
 })
-student.post('/uploadImage', upload.single('file'), function (req, res) {
-    // res.json({})
-    console.log('Image:')
+ 
+student.post('/uploadImage/:id', upload.single('file'), function (req, res) {
+    let username = req.params.id.toString()
+    let imagePath = path.join( '/home/sanketmistry/react-prc/sms-backend/uploads/' + username + '.png')
+    let img = fs.readFileSync(imagePath)
+    studentModel.findOneAndUpdate({ _id: username }, {
+        studentImg:
+        {
+            data: img,
+            contentType: 'image/png'
+        }
+    }).then(res => console.log("updated successfully !!"))
+    console.log("Adding Image...")
     console.log(req.body)
-  })
-student.post("/register",(req,res)=>{
+    res.send("sucess!!")
+})
+
+student.post("/register", (req, res) => {
     console.log("Registering student...")
-    console.log(req.body[1].profileImg)
+    console.log(req.body)
     let studentMail = req.body.email
-    let studentId = req.body.firstName + generatePassword().slice(0,4)
-    let studentPassword = generatePassword()
+    let username = req.body.firstName + generatePassword().slice(0, 4)
+    let password = generatePassword()
+    console.log(username, password)
+    let studentData = { ...req.body, username, password, role:'student' }
+    console.log(studentData)
+
+    studentModel.create(studentData).then(user => {
+        console.log("New Student Added !!!")
+        res.send(user)
+    }).catch(err => res.send(err))
 
     var mailOptions = {
         from: 'sanket.mistry@rayoinnovations.com',
@@ -95,8 +126,8 @@ student.post("/register",(req,res)=>{
         
         Here are some important details regarding your successful registration:
         
-        Student ID: ${studentId}
-        Student Password : ${studentPassword}
+        Student ID: ${username}
+        Student Password : ${password}
        
         As a new student, you will soon embark on an exciting adventure filled with numerous learning opportunities, extracurricular activities, and friendships that will last a lifetime. Our faculty and staff are dedicated to fostering a supportive and inclusive learning environment that promotes academic excellence and character development.
         
@@ -111,7 +142,7 @@ student.post("/register",(req,res)=>{
         Saraswati Vidhyalaya
         7041139593
         sanket.m.mistry@gmail.com`
-      };
+    };
 
     //   transporter.sendMail(mailOptions, function(error, info){
     //     if (error) {
@@ -120,5 +151,7 @@ student.post("/register",(req,res)=>{
     //       console.log('Email sent: ' + info.response);
     //     }
     //   });
+
+
 })
 module.exports = student 

@@ -1,0 +1,6 @@
+var path = require('path')
+var fs = require('fs')
+console.log(__dirname)
+let a = path.join(__dirname+'/uploads/64c9ebe55618f589f40d5efd.png')
+let img = fs.readFileSync(a)
+console.log(img)
