@@ -67,10 +67,12 @@ student.get("/:username",(req,res)=>{
 })
 
 // update student
-student.put("/:id", (req, res) => {
-    let username = req.params.id
-
-    studentModel.updateOne({ _id: username }, req.body)
+student.put("/:username", (req, res) => {
+    let username = req.params.username
+    console.log("updating student !!!")
+    console.log(username)
+    console.log(req.body)
+    studentModel.updateOne({ username: req.body.username }, req.body)
         .then(data => res.send(username))
 })
 
@@ -78,7 +80,7 @@ student.put("/:id", (req, res) => {
 student.delete("/:id", (req, res) => {
     let username = req.params.id
 
-    studentModel.deleteOne({ _id: username })
+    studentModel.deleteOne({ username: username })
         .then(data => res.send(username))
         .catch(err => res.send(err))
 })
