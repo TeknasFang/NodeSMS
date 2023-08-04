@@ -87,7 +87,8 @@ student.delete("/:id", (req, res) => {
  
 student.post('/uploadImage/:id', upload.single('file'), function (req, res) {
     let username = req.params.id.toString()
-    let imagePath = path.join( '/home/sanketmistry/react-prc/sms-backend/uploads/' + username + '.png')
+    // let imagePath = path.join( '/home/sanketmistry/react-prc/sms-backend/uploads/' + username + '.png')
+    let imagePath = path.join( 'C:/Users/Admin/Desktop/SMS/Node/uploads/' + username + '.png')
     let img = fs.readFileSync(imagePath)
     studentModel.findOneAndUpdate({ _id: username }, {
         studentImg:
